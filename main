@@ -1,0 +1,92 @@
+
+#include <iostream>
+using namespace std;
+
+struct ListNode {
+    int val;
+    ListNode* next;
+
+    ListNode(int x) {
+        val = x;
+        next = nullptr;
+    }
+};
+
+int doubleRecursive(ListNode* node) {
+    if (node == nullptr) {
+        return 0;
+    }
+
+    int carry = doubleRecursive(node->next);
+    int value = node->val * 2 + carry;
+
+    node->val = value % 10;
+
+    return value / 10;
+}
+
+ListNode* doubleIt(ListNode* head) {
+    int carry = doubleRecursive(head);
+
+    if (carry > 0) {
+        ListNode* newHead = new ListNode(carry);
+        newHead->next = head;
+        return newHead;
+    }
+
+    return head;
+}
+
+ListNode* createList(int arr[], int index, int size) {
+    if (index == size) {
+        return nullptr;
+    }
+
+    ListNode* node = new ListNode(arr[index]);
+    node->next = createList(arr, index + 1, size);
+
+    return node;
+}
+
+void printList(ListNode* head) {
+    if (head == nullptr) {
+        cout << endl;
+        return;
+    }
+
+    cout << head->val << " ";
+    printList(head->next);
+}
+
+void deleteList(ListNode* head) {
+    if (head == nullptr) {
+        return;
+    }
+
+    deleteList(head->next);
+    delete head;
+}
+
+void runExample(int arr[], int size) {
+    ListNode* head = createList(arr, 0, size);
+
+    head = doubleIt(head);
+
+    cout << "Result: ";
+    printList(head);
+
+    deleteList(head);
+}
+
+int main() {
+    int arr1[] = {1, 8, 9};
+    int arr2[] = {9, 9, 9};
+
+    cout << "Example 1: ";
+    runExample(arr1, 3);
+
+    cout << "Example 2: ";
+    runExample(arr2, 3);
+
+    return 0;
+}
